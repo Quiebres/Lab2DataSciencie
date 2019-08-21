@@ -1,17 +1,29 @@
+
+########################################
+## Universidad del Valle de Guatemala ##
+## Laboratorio 1: Data Science        ##
+## Autores:                           ##
+##    Mayra Silva                     ##
+##    Odalis Reyes                    ##           
+##    Ivan Maldonado                  ##
+########################################
+
+
+
 # Instalación de paquetes
-install.packages("rela")
-install.packages("psych")
-install.packages("FactoMineR")
-install.packages("corrplot")
-install.packages("cluster")
-install.packages("fpc")
-install.packages("NbClust")
-install.packages("factoextra")
-install.packages("REdaS")
-install.packages("arules")
-install.packages("ggplot2")
-install.packages("ggpubr")
-install.packages("ggmap")
+#install.packages("rela")
+#install.packages("psych")
+#install.packages("FactoMineR")
+#install.packages("corrplot")
+#install.packages("cluster")
+#install.packages("fpc")
+#install.packages("NbClust")
+#install.packages("factoextra")
+#install.packages("REdaS")
+#install.packages("arules")
+#install.packages("ggplot2")
+#install.packages("ggpubr")
+#install.packages("ggmap")
 
 
 
@@ -29,10 +41,12 @@ library(corrplot)
 library(REdaS)
 library(ggplot2) # Graficas bonitas
 library(ggpubr) # Graficas bonitas x2
-library(ggmap)
+#library(ggmap)
 library(arules) # Reglas de asociacion
 
 
+
+setwd("C:/Users/smayr/Documents/Tercer a�o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
 # Leyendo el dataset de csv
 train <- read.csv("train.csv", TRUE, ",")
@@ -43,11 +57,11 @@ class(train)
 
 # Exploración rápida del dataset usando un resumen
 summary(train)
-
 # Se separan las variables cuantitativas del dataset train
 trainCuan <- train[,c(4,5,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,53,55,57,60,62,63,67,68,69,70,71,72,76,77,78,81)]
 # Se separan las variables cualitativas del dataset train
 trainCual <- train[,-c(4,5,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,53,55,57,60,62,63,67,68,69,70,71,72,76,77,78,81)]
+
 
 
 
@@ -145,4 +159,26 @@ reglas<-apriori(trainCual[,3:45], parameter = list(support = 0.50,
                                                    target = "rules"))
 
 # rulesAP <- apriori(trainCuan, parameter = list(support = 0.5, condifence = 0.8, maxlen = 10, maxtime=5, target = "rules"))
+
+
+
+
+
+# ------------------- Particion de datos ----------------------
+
+
+
+#Particionando los datos en conjunto de entrenamiento y prueba
+
+set.seed(123)
+
+porciento <- 60/100 #Porciento en el que se partirán los datos
+muestra<-sample(1:nrow(trainCuan),porciento*nrow(trainCuan))#Muestra aleatoria de numeros de un vector
+
+trainCuan <- na.omit(trainCuan)
+trainSet<-trainCuan[muestra,] #Obtengo las filas de los elementos que estan en el sector de muestra
+testSet<-trainCuan[-muestra,] #Obtengo las filas de los elementos que no están en el vector de muestra
+
+
+
 
