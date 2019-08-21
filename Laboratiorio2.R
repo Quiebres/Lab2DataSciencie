@@ -1,4 +1,5 @@
 
+
 ########################################
 ## Universidad del Valle de Guatemala ##
 ## Laboratorio 2: Data Science        ##
@@ -47,7 +48,7 @@ library(factoextra)
 library(arulesViz)
 
 
-setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
+setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
 # Leyendo el dataset de csv
 train <- read.csv("train.csv", TRUE, ",")
@@ -186,5 +187,12 @@ testSet<-trainCuan[-muestra,] #Obtengo las filas de los elementos que no estÃ¡n 
 
 
 
+
+#----------------------- Modelo de regresion lineal -------------------
+#Generación del modelo
+m <- trainCuan[,c(3, 5, 8, 11,12, 15, 22, 25, 26, 36)]
+
+modeloLinealSimple<-lm(data = m)
+summary(modeloLinealSimple)
 
 
