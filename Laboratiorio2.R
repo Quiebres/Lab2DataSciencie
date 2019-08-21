@@ -1,7 +1,7 @@
 
 ########################################
 ## Universidad del Valle de Guatemala ##
-## Laboratorio 1: Data Science        ##
+## Laboratorio 2: Data Science        ##
 ## Autores:                           ##
 ##    Mayra Silva                     ##
 ##    Odalis Reyes                    ##           
@@ -43,7 +43,8 @@ library(ggplot2) # Graficas bonitas
 library(ggpubr) # Graficas bonitas x2
 #library(ggmap)
 library(arules) # Reglas de asociacion
-
+library(factoextra) 
+library(arulesViz)
 
 
 setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
@@ -160,6 +161,9 @@ reglas<-apriori(trainCual[,3:45], parameter = list(support = 0.50,
 
 # rulesAP <- apriori(trainCuan, parameter = list(support = 0.5, condifence = 0.8, maxlen = 10, maxtime=5, target = "rules"))
 
+#reglas más importantes
+top10subRules <- head(reglas, n = 10, by = "confidence")
+plot(top10subRules, method="graph", engine="htmlwidget")
 
 
 
@@ -178,6 +182,7 @@ muestra<-sample(1:nrow(trainCuan),porciento*nrow(trainCuan))#Muestra aleatoria d
 trainCuan <- na.omit(trainCuan)
 trainSet<-trainCuan[muestra,] #Obtengo las filas de los elementos que estan en el sector de muestra
 testSet<-trainCuan[-muestra,] #Obtengo las filas de los elementos que no estÃ¡n en el vector de muestra
+
 
 
 
