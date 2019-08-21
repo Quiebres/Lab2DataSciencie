@@ -47,7 +47,7 @@ library(factoextra)
 library(arulesViz)
 
 
-setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
+setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
 # Leyendo el dataset de csv
 train <- read.csv("train.csv", TRUE, ",")
@@ -149,8 +149,9 @@ fviz_nbclust(scale(numericas), kmeans, method = "silhouette", k.max = 10) + them
 
 KMO(corre) #Mala adecuacion muestral
 bart_spher(mcorrelacion) # valor p aproximadamente 0. Se rechaza Ho. Se realiza el PCA.
-pcaTrainCuan <- PCA(trainCuan)
+pcaTrainCuan <- prcomp(trainCuan, center = TRUE, scale. = TRUE)
 summary(pcaTrainCuan)
+datoSig <- pcaTrainCuan$x[,1:22]
 
 
 
@@ -161,7 +162,7 @@ reglas<-apriori(trainCual[,3:45], parameter = list(support = 0.50,
 
 # rulesAP <- apriori(trainCuan, parameter = list(support = 0.5, condifence = 0.8, maxlen = 10, maxtime=5, target = "rules"))
 
-#reglas más importantes
+#reglas m?s importantes
 top10subRules <- head(reglas, n = 10, by = "confidence")
 plot(top10subRules, method="graph", engine="htmlwidget")
 
