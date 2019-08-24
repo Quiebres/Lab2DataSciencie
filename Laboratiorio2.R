@@ -193,9 +193,9 @@ plot(top10subRules, method="graph", engine="htmlwidget")
 
 # LABORATORIO 2
 
-# ------------------- Particion de datos ----------------------
-
-
+#-------------------------------------------------
+# Particion de los datos
+#-------------------------------------------------
 
 #Particionando los datos en conjunto de entrenamiento y prueba con muestreo aleatorio simple
 set.seed(123)
@@ -207,9 +207,9 @@ trainSet<-compPrincipales[muestra,] #Obtengo las filas de los elementos que esta
 testSet<-compPrincipales[-muestra,] #Obtengo las filas de los elementos que no están en el vector de muestra
 
 
-
-
-#----------------------- Modelo de regresion lineal -------------------
+#-------------------------------------------------
+# Regresion Lineal Multivariada 
+#-------------------------------------------------
 
 #Se crea un data frame que almacena las componentes principales y la variable precio de venta
 comparacion <- as.data.frame(cbind(exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal, ventaPrecio, calidad))
@@ -223,5 +223,9 @@ trainModel$coefficients
 plot(y = trainSet$ventaPrecio, x = trainSet$tamanoPrecio + trainSet$exteriorVivienda + trainSet$temporadaCompra, xlab = "Cualidades de la casa/terreno", ylab = "Precio de venta de las casas")
 abline(trainModel)
 
+
+#-------------------------------------------------
+# Prediccion del modelo
+#-------------------------------------------------
 
 
