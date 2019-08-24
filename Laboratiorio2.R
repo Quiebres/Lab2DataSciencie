@@ -48,7 +48,7 @@ library(factoextra)
 library(arulesViz)
 
 
-setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
+setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
 # Leyendo el dataset de csv
 train <- read.csv("train.csv", TRUE, ",")
@@ -150,9 +150,9 @@ fviz_nbclust(scale(numericas), kmeans, method = "silhouette", k.max = 10) + them
 
 KMO(corre) #Mala adecuacion muestral
 bart_spher(mcorrelacion) # valor p aproximadamente 0. Se rechaza Ho. Se realiza el PCA.
-pcaTrainCuan <- prcomp(trainCuan, center = TRUE, scale. = TRUE)
-summary(pcaTrainCuan)
-datoSig <- pcaTrainCuan$x[,1:22]
+pcaTrainCuan <- prcomp(trainCuan, scale = T)
+pcaTrainCuan #Correr este cÃ³digo para observar las componentes de las componentes principales
+
 
 
 
@@ -189,7 +189,7 @@ testSet<-trainCuan[-muestra,] #Obtengo las filas de los elementos que no estÃ¡n 
 
 
 #----------------------- Modelo de regresion lineal -------------------
-#Generación del modelo
+#Generaci?n del modelo
 m <- trainCuan[,c(3, 5, 8, 11,12, 15, 22, 25, 26, 36)]
 
 modeloLinealSimple<-lm(data = m)
