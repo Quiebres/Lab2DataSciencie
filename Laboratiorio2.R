@@ -49,7 +49,7 @@ library(factoextra)
 library(arulesViz)
 
 
-setwd("C:/Users/smayr/Documents/Tercer a�o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
+# setwd("C:/Users/smayr/Documents/Tercer a�o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
 
 # Leyendo el dataset de csv
@@ -164,12 +164,13 @@ corrplot(var$cos2, is.corr = F) #Se hace una gráfica de cos2
 exteriorVivienda <- 0.103 * trainCuan$OverallCond + 0.113 * trainCuan$LotFrontage
 temporadaCompra <- 0.355 * trainCuan$X3SsnPorch + 0.152 * trainCuan$PoolArea + 0.105 * trainCuan$MoSold
 sotano <- 0.041 * trainCuan$BsmtFinSF1 + 0.345 * trainCuan$BsmtFinSF2
-tamanoPrecio <- 0.667*trainCuan$OverallQual + 0.49 * trainCuan$X1stFlrSF + 0.11 * trainCuan$X2ndFlrSF + 0.64 * trainCuan$GrLivArea + 0.57 * trainCuan$GarageCars + 0.55 * trainCuan$GarageArea # + 0.794 * trainCuan$SalePrice
+tamanoPrecio <-  0.49 * trainCuan$X1stFlrSF + 0.11 * trainCuan$X2ndFlrSF + 0.64 * trainCuan$GrLivArea + 0.57 * trainCuan$GarageCars + 0.55 * trainCuan$GarageArea # + 0.794 * trainCuan$SalePrice
 areaMalaCal <- 0.43 * trainCuan$LowQualFinSF
 ventaPrecio <- trainCuan$SalePrice
+calidad <- 0.667*trainCuan$OverallQual
 
 #Se genera un data frame a partir de estas componentes
-compPrincipales <- cbind(exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal, ventaPrecio)
+compPrincipales <- cbind(exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal, ventaPrecio, calidad)
 compPrincipales <- as.data.frame(compPrincipales)
 
 # -------------- Apriori ------------------
@@ -199,7 +200,7 @@ plot(top10subRules, method="graph", engine="htmlwidget")
 #Particionando los datos en conjunto de entrenamiento y prueba con muestreo aleatorio simple
 set.seed(123)
 porciento <- 60/100 #Porciento en el que se partirán los datos
-muestra<-sample(1:nrow(compPrincipales),porciento*nrow(compPrincipales))#Muestra aleatoria de numeros de un vector
+muestra<-sample(1:nrow(compPrincipales),porciento*nrow(compPrincipales)) #Muestra aleatoria de numeros de un vector
 
 compPrincipales <- na.omit(compPrincipales)
 trainSet<-compPrincipales[muestra,] #Obtengo las filas de los elementos que estan en el sector de muestra
@@ -209,21 +210,18 @@ testSet<-compPrincipales[-muestra,] #Obtengo las filas de los elementos que no e
 
 
 #----------------------- Modelo de regresion lineal -------------------
+
 #Se crea un data frame que almacena las componentes principales y la variable precio de venta
-comparacion <- as.data.frame(cbind(exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal, ventaPrecio))
+comparacion <- as.data.frame(cbind(exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal, ventaPrecio, calidad))
 pairs(comparacion, col = "red")
 
 #Modelo de regresión lineal multivariado
-trainModel <- lm(formula = trainSet$ventaPrecio ~ trainSet$tamanoPrecio + trainSet$exteriorVivienda +trainSet$temporadaCompra, data = trainSet)
-summary(trainModel) # Resumen del modelo con un R^2 de 0.57
+trainModel <- lm(formula = trainSet$ventaPrecio ~ trainSet$tamanoPrecio + trainSet$exteriorVivienda +trainSet$temporadaCompra + trainSet$calidad, data = trainSet)
+summary(trainModel) # Resumen del modelo con un R^2 de 0.78
 trainModel$coefficients 
 # Grafica de las variables
-plot(y = trainSet$ventaPrecio, x = trainSet$tamanoPrecio + trainSet$exteriorVivienda + trainSet$temporadaCompra, xlab = "Precio de venta",ylab = "Tamaño de la casa")
+plot(y = trainSet$ventaPrecio, x = trainSet$tamanoPrecio + trainSet$exteriorVivienda + trainSet$temporadaCompra, xlab = "Cualidades de la casa/terreno", ylab = "Precio de venta de las casas")
 abline(trainModel)
 
-#Se hizo una regresión de polinomio 2
-# Parecio mostrar este comportamiendo y por eso se colocó 
-lm2 <- lm(trainSet$ventaPrecio ~ poly(trainSet$tamanoPrecio + trainSet$exteriorVivienda +trainSet$temporadaCompra, 2))
-summary(lm2)
 
 
