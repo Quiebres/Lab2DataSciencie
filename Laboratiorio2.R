@@ -48,7 +48,7 @@ library(factoextra)
 library(arulesViz)
 
 
-setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
+setwd("C:/Users/smayr/Documents/Tercer a�o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
 
 # Leyendo el dataset de csv
