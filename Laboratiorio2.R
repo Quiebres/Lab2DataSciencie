@@ -12,19 +12,19 @@
 
 
 # Instalación de paquetes
-#install.packages("rela")
-#install.packages("psych")
-#install.packages("FactoMineR")
-#install.packages("corrplot")
-#install.packages("cluster")
-#install.packages("fpc")
-#install.packages("NbClust")
-#install.packages("factoextra")
-#install.packages("REdaS")
-#install.packages("arules")
-#install.packages("ggplot2")
-#install.packages("ggpubr")
-#install.packages("ggmap")
+install.packages("rela")
+install.packages("psych")
+install.packages("FactoMineR")
+install.packages("corrplot")
+install.packages("cluster")
+install.packages("fpc")
+install.packages("NbClust")
+install.packages("factoextra")
+install.packages("REdaS")
+install.packages("arules")
+install.packages("ggplot2")
+install.packages("ggpubr")
+install.packages("ggmap")
 
 
 
@@ -49,6 +49,7 @@ library(arulesViz)
 
 
 setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
+
 
 # Leyendo el dataset de csv
 train <- read.csv("train.csv", TRUE, ",")
@@ -153,7 +154,10 @@ bart_spher(mcorrelacion) # valor p aproximadamente 0. Se rechaza Ho. Se realiza 
 pcaTrainCuan <- prcomp(trainCuan, scale = T)
 pcaTrainCuan #Correr este código para observar las componentes de las componentes principales
 
-
+trainCuanPCA <- PCA(trainCuan,ncp = 22)
+summary(trainCuanPCA)
+var<-get_pca_var(trainCuanPCA)
+corrplot(var$cos2, is.corr = F)
 
 
 # -------------- Apriori ------------------
@@ -169,6 +173,12 @@ plot(top10subRules, method="graph", engine="htmlwidget")
 
 
 
+
+
+
+
+
+# LABORATORIO 2
 
 # ------------------- Particion de datos ----------------------
 
