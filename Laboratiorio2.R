@@ -25,6 +25,7 @@ install.packages("arules")
 install.packages("ggplot2")
 install.packages("ggpubr")
 install.packages("ggmap")
+install.packages("arulesViz")
 
 
 
@@ -151,14 +152,24 @@ fviz_nbclust(scale(numericas), kmeans, method = "silhouette", k.max = 10) + them
 
 KMO(corre) #Mala adecuacion muestral
 bart_spher(mcorrelacion) # valor p aproximadamente 0. Se rechaza Ho. Se realiza el PCA.
-pcaTrainCuan <- prcomp(trainCuan, scale = T)
-pcaTrainCuan #Correr este código para observar las componentes de las componentes principales
+#pcaTrainCuan <- prcomp(trainCuan, scale = T)
+#pcaTrainCuan #Correr este código para observar las componentes de las componentes principales
 
-trainCuanPCA <- PCA(trainCuan,ncp = 22)
-summary(trainCuanPCA)
-var<-get_pca_var(trainCuanPCA)
-corrplot(var$cos2, is.corr = F)
+trainCuanPCA <- PCA(trainCuan,ncp = 22) #Se crea un PCA de 22 componentes principales
+summary(trainCuanPCA) #Se observa la varianza acumulada que es del 91%
+var<-get_pca_var(trainCuanPCA) #Se separan sacan las variables del PCA
+corrplot(var$cos2, is.corr = F) #Se hace una gráfica de cos2
 
+#Se crean nuevas variables a partir de las variables con mayor aporte en en las 22 componentes principales
+exteriorVivienda <- 0.103 * trainCuan$OverallCond + 0.113 * trainCuan$LotFrontage
+temporadaCompra <- 0.355 * trainCuan$X3SsnPorch + 0.152 * trainCuan$PoolArea + 0.105 * trainCuan$MoSold
+sotano <- 0.041 * trainCuan$BsmtFinSF1 + 0.345 * trainCuan$BsmtFinSF2
+tamanoPrecio <- 0.49 * trainCuan$X1stFlrSF + 0.11 * trainCuan$X2ndFlrSF + 0.64 * trainCuan$GrLivArea + 0.57 * trainCuan$GarageCars + 0.55 * trainCuan$GarageArea + #0.794 * trainCuan$SalePrice
+areaMalaCal <- 0.43 * trainCuan$LowQualFinSF
+
+#Se genera un data frame a partir de estas componentes
+compPrincipales <- cbind(exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal)
+compPrincipales <- as.data.frame(compPrincipales)
 
 # -------------- Apriori ------------------
 reglas<-apriori(trainCual[,3:45], parameter = list(support = 0.50,
@@ -199,6 +210,9 @@ testSet<-trainCuan[-muestra,] #Obtengo las filas de los elementos que no están 
 
 
 #----------------------- Modelo de regresion lineal -------------------
+#Se crea un data frame que almacena las componentes principales y la variable precio de venta
+comparacion <- as.data.frame(cbind(exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal, trainCuan$SalePrice))
+pairs(comparacion, col = "red")
 #Generaci?n del modelo
 m <- trainCuan[,c(3, 5, 8, 11,12, 15, 22, 25, 26, 36)]
 
