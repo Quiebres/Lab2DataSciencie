@@ -26,7 +26,8 @@
 #install.packages("ggpubr")
 #install.packages("ggmap")
 #install.packages("arulesViz")
-
+install.packages("dplyr")
+install.packages("splitstackshape")
 
 
 require(ggpubr) # Para mejorar la visualizaci√≥n gr√°fica
@@ -47,9 +48,11 @@ library(ggpubr) # Graficas bonitas x2
 library(arules) # Reglas de asociacion
 library(factoextra) 
 library(arulesViz)
+library(dplyr)
+library(splitstackshape)
 
 
-# setwd("C:/Users/smayr/Documents/Tercer aÒo/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
+# setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
 
 # Leyendo el dataset de csv
@@ -244,11 +247,34 @@ sigma(modelNew)/mean(comparacion$ventaPrecio)
 modeloLinealMulti<-lm(trainSet$ventaPrecio~., data = trainSet)
 summary(modeloLinealMulti)
 
-#predicciÛn
+#predicci?n
 prediccion<-predict(modeloLinealSimple,newdata = testSet)
-# Se agrega la predicciÛn al conjunto de entrenamiento
+# Se agrega la predicci?n al conjunto de entrenamiento
 testSet$SalePricePred<-prediccion
 #Ver la diferencia entre lo real y lo predicho
 dif<-abs(testSet$SalePricePred-testSet$SalePrice)
+
+#-------------------------------------------------
+# KNN
+#-------------------------------------------------
+
+
+#Se obtienen los cuartiles de los precios
+quantile(trainCuan$SalePrice)
+#0%    25%    50%    75%   100% 
+#35311 131000 164900 219500 755000
+#En vase a estos cuartiles se tomar√° como bajo a los precios entre 35311 y 131000. Como medio a los precios entre 131000 y 219500.
+#Como alto a los precios entre 219500 en adelante.
+
+#Se crea una columna de clasificacion en el trainCuan
+trainCuan$precio <- case_when(trainCuan$SalePrice < 131000 ~ 'Bajo',
+                                  trainCuan$SalePrice < 219500 ~ 'Medio',
+                                  TRUE ~ 'Alto')
+
+#Se crean los nuevos train y test set
+
+nuevoTrainSet <- stratified(trainCuan, c('precio'), 0.5) #Obtengo las filas de los elementos que estan en el sector de nuevaMuestra
+nuevoTestSet <- trainCuan %>%filter(trainCuan$SalePrice != nuevoTrainSet$SalePrice)
+
 
 
