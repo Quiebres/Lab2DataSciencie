@@ -170,7 +170,7 @@ ventaPrecio <- trainCuan$SalePrice
 calidad <- 0.667*trainCuan$OverallQual
 
 #Se genera un data frame a partir de estas componentes
-compPrincipales <- cbind(exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal, ventaPrecio, calidad)
+compPrincipales <- cbind(ventaPrecio,exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal, calidad)
 compPrincipales <- as.data.frame(compPrincipales)
 
 # -------------- Apriori ------------------
@@ -224,6 +224,8 @@ plot(y = trainSet$ventaPrecio, x = trainSet$tamanoPrecio + trainSet$exteriorVivi
 abline(trainModel)
 
 
+
+
 #-------------------------------------------------
 # Prediccion del modelo
 #-------------------------------------------------
@@ -234,5 +236,19 @@ step(object = trainModel, direction = "both", trace = 1)
 modelNew <- lm(formula = trainSet$ventaPrecio ~ trainSet$tamanoPrecio + trainSet$exteriorVivienda + trainSet$calidad, data = trainSet)
 summary(modelNew)
 confint(modelNew)
+
+
+sigma(modelNew)/mean(comparacion$ventaPrecio)
+
+
+modeloLinealMulti<-lm(trainSet$ventaPrecio~., data = trainSet)
+summary(modeloLinealMulti)
+
+#predicción
+prediccion<-predict(modeloLinealSimple,newdata = testSet)
+# Se agrega la predicción al conjunto de entrenamiento
+testSet$SalePricePred<-prediccion
+#Ver la diferencia entre lo real y lo predicho
+dif<-abs(testSet$SalePricePred-testSet$SalePrice)
 
 
