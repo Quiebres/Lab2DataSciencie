@@ -28,7 +28,8 @@
 #install.packages("arulesViz")
 install.packages("dplyr")
 install.packages("caret")
-
+install.packages("class")
+install.packages("e1071")
 
 require(ggpubr) # Para mejorar la visualización gráfica
 require(tidyverse) # Para explotar, manipular y visualizar datos que comparten info
@@ -50,7 +51,8 @@ library(factoextra)
 library(arulesViz)
 library(dplyr)
 library(caret) # Muestreo estratificado
-
+library(class) # Para KNN
+library(e1071) # Requisito para la matriz de confusión
 
 # setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
@@ -289,4 +291,11 @@ nuevoTestSet <- compPrincipales[-filas,] # 40% de datos para prueba
 #-------------------------------------------------
 # KNN
 #-------------------------------------------------
+
+#Se necesitan instalar los packages class y e1071
+#Se ponen los train y test sets en c(2:6) para no tomar encuenta las variables ventaPrecio y precio
+
+predKNN <- knn(nuevoTrainSet[,c(2:6)],nuevoTestSet[,c(2:6)],as.factor(nuevoTrainSet$precio),k=37)
+cfm <- confusionMatrix(as.factor(nuevoTestSet$precio),predKNN)
+cfm
 
