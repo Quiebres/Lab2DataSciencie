@@ -27,7 +27,7 @@
 #install.packages("ggmap")
 #install.packages("arulesViz")
 install.packages("dplyr")
-install.packages("splitstackshape")
+install.packages("caret")
 
 
 require(ggpubr) # Para mejorar la visualización gráfica
@@ -49,7 +49,7 @@ library(arules) # Reglas de asociacion
 library(factoextra) 
 library(arulesViz)
 library(dplyr)
-library(splitstackshape)
+library(caret) # Muestreo estratificado
 
 
 # setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
@@ -197,7 +197,7 @@ reglas<-apriori(trainCual[,3:45], parameter = list(support = 0.50,
 # LABORATORIO 2
 
 #-------------------------------------------------
-# Particion de los datos
+# Muestreo aleatorio simple
 #-------------------------------------------------
 
 #Particionando los datos en conjunto de entrenamiento y prueba con muestreo aleatorio simple
@@ -254,10 +254,10 @@ testSet$SalePricePred<-prediccion
 #Ver la diferencia entre lo real y lo predicho
 dif<-abs(testSet$SalePricePred-testSet$SalePrice)
 
-#-------------------------------------------------
-# KNN
-#-------------------------------------------------
 
+#-------------------------------------------------
+# Variable categórica de precios
+#-------------------------------------------------
 
 #Se obtienen los cuartiles de los precios
 quantile(trainCuan$SalePrice)
@@ -266,15 +266,27 @@ quantile(trainCuan$SalePrice)
 #En vase a estos cuartiles se tomará como bajo a los precios entre 35311 y 131000. Como medio a los precios entre 131000 y 219500.
 #Como alto a los precios entre 219500 en adelante.
 
-#Se crea una columna de clasificacion en el trainCuan
-trainCuan$precio <- case_when(trainCuan$SalePrice < 131000 ~ 'Bajo',
-                                  trainCuan$SalePrice < 219500 ~ 'Medio',
+#Se crea una columna de clasificacion para el precio
+compPrincipales$precio <- case_when(compPrincipales$ventaPrecio < 131000 ~ 'Bajo',
+                                  compPrincipales$ventaPrecio < 219500 ~ 'Medio',
                                   TRUE ~ 'Alto')
 
-#Se crean los nuevos train y test set
 
-nuevoTrainSet <- stratified(trainCuan, c('precio'), 0.5) #Obtengo las filas de los elementos que estan en el sector de nuevaMuestra
-nuevoTestSet <- trainCuan %>%filter(trainCuan$SalePrice != nuevoTrainSet$SalePrice)
+#-------------------------------------------------
+# Muestreo estraficiado
+#-------------------------------------------------
+
+# nuevoTrainSet <- stratified(compPrincipales, c('precio'), 0.6)
+# nuevoTestSet <- compPrincipales %>%filter(compPrincipales$ventaPrecio != nuevoTrainSet$ventaPrecio)
+# } 
+
+# Se crea una muestra estraficiada por el precio de casas
+filas <- createDataPartition(compPrincipales$precio, p=0.6, list = FALSE)
+nuevoTrainSet <- compPrincipales[filas,] # 60% de datos para entrenamiento
+nuevoTestSet <- compPrincipales[-filas,] # 40% de datos para prueba
 
 
+#-------------------------------------------------
+# KNN
+#-------------------------------------------------
 
