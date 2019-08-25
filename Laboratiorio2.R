@@ -295,7 +295,10 @@ nuevoTestSet <- compPrincipales[-filas,] # 40% de datos para prueba
 #Se necesitan instalar los packages class y e1071
 #Se ponen los train y test sets en c(2:6) para no tomar encuenta las variables ventaPrecio y precio
 
-predKNN <- knn(nuevoTrainSet[,c(2:6)],nuevoTestSet[,c(2:6)],as.factor(nuevoTrainSet$precio),k=37)
+predKNN <- knn(nuevoTrainSet[,c(2:6)],nuevoTestSet[,c(2:6)],
+               as.factor(nuevoTrainSet$precio),k=37)
+
+# Matriz de confusión
 cfm <- confusionMatrix(as.factor(nuevoTestSet$precio),predKNN)
 cfm
 
