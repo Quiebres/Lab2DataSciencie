@@ -1,5 +1,6 @@
 
 
+
 ########################################
 ## Universidad del Valle de Guatemala ##
 ## Laboratorio 2: Data Science        ##
@@ -26,10 +27,10 @@
 #install.packages("ggpubr")
 #install.packages("ggmap")
 #install.packages("arulesViz")
-install.packages("dplyr")
-install.packages("caret")
-install.packages("class")
-install.packages("e1071")
+#install.packages("dplyr")
+#install.packages("caret")
+#install.packages("class")
+#install.packages("e1071")
 
 require(ggpubr) # Para mejorar la visualización gráfica
 require(tidyverse) # Para explotar, manipular y visualizar datos que comparten info
@@ -54,7 +55,7 @@ library(caret) # Muestreo estratificado
 library(class) # Para KNN
 library(e1071) # Requisito para la matriz de confusión
 
-# setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
+setwd("C:/Users/smayr/Documents/Tercer a�o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
 
 # Leyendo el dataset de csv
@@ -111,12 +112,12 @@ plot(x = train$MSZoning, main = "Clasificación general de las zonas de venta",
      xlab = "Zonas")
 # Grafica de pie
 x <-  c(95, 1365)
-labels <-  c("Sí", "No")
+labels <-  c("S�?", "No")
 piepercent<- round(100*x/sum(x), 1) # Porcentaje
 # Pie chart
 pie(x, labels = piepercent, main = "Proporcion de casas con aire acondicionado",
     col = rainbow(length(x)))
-legend("topright", c("Sí","No"), cex = 0.8,
+legend("topright", c("S�?","No"), cex = 0.8,
        fill = rainbow(length(x)))
 
 
@@ -242,7 +243,7 @@ modelNew <- lm(formula = trainSet$ventaPrecio ~ trainSet$tamanoPrecio + trainSet
 summary(modelNew)
 confint(modelNew)
 
-
+#error del modelo
 sigma(modelNew)/mean(comparacion$ventaPrecio)
 
 
@@ -250,11 +251,11 @@ modeloLinealMulti<-lm(trainSet$ventaPrecio~., data = trainSet)
 summary(modeloLinealMulti)
 
 #predicci?n
-prediccion<-predict(modeloLinealSimple,newdata = testSet)
+#prediccion<-predict(modeloLinealSimple,newdata = testSet)
 # Se agrega la predicci?n al conjunto de entrenamiento
-testSet$SalePricePred<-prediccion
+#testSet$SalePricePred<-prediccion
 #Ver la diferencia entre lo real y lo predicho
-dif<-abs(testSet$SalePricePred-testSet$SalePrice)
+#dif<-abs(testSet$SalePricePred-testSet$SalePrice)
 
 
 #-------------------------------------------------
@@ -301,4 +302,29 @@ predKNN <- knn(nuevoTrainSet[,c(2:6)],nuevoTestSet[,c(2:6)],
 # Matriz de confusión
 cfm <- confusionMatrix(as.factor(nuevoTestSet$precio),predKNN)
 cfm
+
+
+#-------------------------------------------------
+# Validacion cruzada
+#-------------------------------------------------
+
+set.seed(123)
+trctrl <- trainControl(method = "repeatedcv",
+                       number = 10,
+                       repeats = 3)
+
+#nuevoTrainSet$ventaPrecio<-as.factor(nuevoTrainSet$ventaPrecio)
+#nuevoTestSet$ventaPrecio<-as.factor(nuevoTestSet$ventaPrecio)
+
+knnTrain2 <- train(ventaPrecio ~., data = nuevoTrainSet, method = "knn",
+                  trControl = trctrl, preProcess = c("center", "scale"), tuneLength=10)
+
+predknn<-predict(knnTrain2,newdata = nuevoTestSet)
+
+
+summary(knnTrain2)
+cfm2 <- confusionMatrix(as.factor(nuevoTestSet$precio),predKNN)
+cfm2
+
+
 
