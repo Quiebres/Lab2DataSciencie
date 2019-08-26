@@ -316,7 +316,7 @@ trctrl <- trainControl(method = "repeatedcv",
 #nuevoTrainSet$ventaPrecio<-as.factor(nuevoTrainSet$ventaPrecio)
 #nuevoTestSet$ventaPrecio<-as.factor(nuevoTestSet$ventaPrecio)
 
-knnTrain2 <- train(ventaPrecio ~., data = nuevoTrainSet, method = "knn",
+knnTrain2 <- train(precio ~., data = nuevoTrainSet, method = "knn",
                   trControl = trctrl, preProcess = c("center", "scale"), tuneLength=10)
 
 predknn<-predict(knnTrain2,newdata = nuevoTestSet)
