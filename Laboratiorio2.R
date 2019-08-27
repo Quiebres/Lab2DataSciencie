@@ -55,13 +55,19 @@ library(caret) # Muestreo estratificado
 library(class) # Para KNN
 library(e1071) # Requisito para la matriz de confusiÃ³n
 
-setwd("C:/Users/smayr/Documents/Tercer año/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
+setwd("C:/Users/smayr/Documents/Tercer a?o/Semestre 6/Data Science/Laboratorio 2/Lab2DataSciencie")
 
 
-# Leyendo el dataset de csv
+# Leyendo el dataset de csv TRAIN
 train <- read.csv("train.csv", TRUE, ",")
 # Volviendo el csv en un data frame
 class(train)
+
+
+# Leyendo el dataset de csv TEST
+test <- read.csv("test.csv", TRUE, ",")
+# Volviendo el csv en un data frame
+class(test)
 
 # ------------ Laboratorio 1 ---------------
 
@@ -72,8 +78,9 @@ trainCuan <- train[,c(4,5,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,
 # Se separan las variables cualitativas del dataset train
 trainCual <- train[,-c(4,5,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,53,55,57,60,62,63,67,68,69,70,71,72,76,77,78,81)]
 
-
-
+# SeparaciÃ³n de variables cuantitativas y cualitativas del dataset test
+testCuan <- test[,c(4,5,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,53,55,57,60,62,63,67,68,69,70,71,72,76,77,78,80)]
+testCual <- test[,-c(4,5,18,19,20,21,27,35,37,38,39,44,45,46,47,48,49,50,51,52,53,55,57,60,62,63,67,68,69,70,71,72,76,77,78,80)]
 
 
 
@@ -112,12 +119,12 @@ plot(x = train$MSZoning, main = "ClasificaciÃ³n general de las zonas de venta",
      xlab = "Zonas")
 # Grafica de pie
 x <-  c(95, 1365)
-labels <-  c("SÃ?", "No")
+labels <-  c("S??", "No")
 piepercent<- round(100*x/sum(x), 1) # Porcentaje
 # Pie chart
 pie(x, labels = piepercent, main = "Proporcion de casas con aire acondicionado",
     col = rainbow(length(x)))
-legend("topright", c("SÃ?","No"), cex = 0.8,
+legend("topright", c("S??","No"), cex = 0.8,
        fill = rainbow(length(x)))
 
 
@@ -175,9 +182,23 @@ areaMalaCal <- 0.43 * trainCuan$LowQualFinSF
 ventaPrecio <- trainCuan$SalePrice
 calidad <- 0.667*trainCuan$OverallQual
 
+
+# PCA para el csv Test
+exteriorVivienda.T <- 0.103 * testCuan$OverallCond + 0.113 * testCuan$LotFrontage
+temporadaCompra.T <- 0.355 * testCuan$X3SsnPorch + 0.152 * testCuan$PoolArea + 0.105 * testCuan$MoSold
+sotano.T <- 0.041 * testCuan$BsmtFinSF1 + 0.345 * testCuan$BsmtFinSF2
+tamanoPrecio.T <-  0.49 * testCuan$X1stFlrSF + 0.11 * testCuan$X2ndFlrSF + 0.64 * testCuan$GrLivArea + 0.57 * testCuan$GarageCars + 0.55 * testCuan$GarageArea # + 0.794 * trainCuan$SalePrice
+areaMalaCal.T <- 0.43 * testCuan$LowQualFinSF
+ventaPrecio.T <- testCuan$SalePrice
+calidad.T <- 0.667*testCuan$OverallQual
+
 #Se genera un data frame a partir de estas componentes
 compPrincipales <- cbind(ventaPrecio,exteriorVivienda, temporadaCompra, sotano, tamanoPrecio, areaMalaCal, calidad)
 compPrincipales <- as.data.frame(compPrincipales)
+
+# Se genera un dataframe con PCA incluÃ­do para el test
+principal.test <- cbind(ventaPrecio.T,exteriorVivienda.T,temporadaCompra.T,sotano.T,tamanoPrecio.T,areaMalaCal.T,calidad.T)
+principal.test <- as.data.frame(principal.test)
 
 # -------------- Apriori ------------------
 reglas<-apriori(trainCual[,3:45], parameter = list(support = 0.50,
