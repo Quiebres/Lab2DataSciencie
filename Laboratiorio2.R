@@ -320,6 +320,9 @@ nuevoTestSet <- compPrincipales[-filas,] # 40% de datos para prueba
 predKNN <- knn(nuevoTrainSet[,c(2:6)],nuevoTestSet[,c(2:6)],
                as.factor(nuevoTrainSet$precio),k=37)
 
+# Passando las predicciones al dataset Test de Kaggle
+testCuan$precio <- predKNN
+
 # Matriz de confusión
 cfm <- confusionMatrix(as.factor(nuevoTestSet$precio),predKNN)
 cfm
